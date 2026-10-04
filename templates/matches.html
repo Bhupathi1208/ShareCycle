@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Matches - ShareCycle</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        .matches-page {
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .matches-container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        /* Header */
+
+        .matches-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .matches-header h1 {
+            font-size: 38px;
+            margin-bottom: 10px;
+        }
+
+        .matches-header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        /* Match grid */
+
+        .matches-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 22px;
+        }
+
+        /* Match card */
+
+        .match-card {
+            background: rgba(255, 255, 255, 0.96);
+            border-radius: 18px;
+            padding: 22px;
+
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+
+            transition: 0.3s ease;
+
+            position: relative;
+            overflow: hidden;
+        }
+
+        .match-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.13);
+        }
+
+        /* Match badge */
+
+        .match-badge {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+
+            padding: 7px 12px;
+
+            border-radius: 20px;
+
+            font-size: 13px;
+            font-weight: bold;
+
+            background: #eef2ff;
+        }
+
+        .excellent {
+            background: #dcfce7;
+        }
+
+        .good {
+            background: #fef3c7;
+        }
+
+        .normal {
+            background: #f3f4f6;
+        }
+
+        /* Item */
+
+        .item-icon {
+            font-size: 45px;
+            margin-bottom: 10px;
+        }
+
+        .match-card h2 {
+            margin: 5px 0 10px;
+            font-size: 22px;
+            padding-right: 80px;
+        }
+
+        .description {
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 18px;
+        }
+
+        /* Details */
+
+        .item-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+
+            margin-bottom: 18px;
+        }
+
+        .detail {
+            background: #f7f7f7;
+            padding: 10px;
+            border-radius: 10px;
+
+            font-size: 14px;
+        }
+
+        .detail strong {
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        /* Reasons */
+
+        .reasons {
+            margin-top: 15px;
+            padding-top: 15px;
+
+            border-top: 1px solid #eee;
+        }
+
+        .reasons h3 {
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+
+        .reason {
+            display: inline-block;
+
+            padding: 6px 10px;
+            margin: 3px;
+
+            border-radius: 20px;
+
+            background: #f0f0ff;
+
+            font-size: 12px;
+        }
+
+        /* Button */
+
+        .view-btn {
+            display: block;
+
+            text-align: center;
+
+            text-decoration: none;
+
+            margin-top: 20px;
+
+            padding: 12px;
+
+            border-radius: 10px;
+
+            font-weight: bold;
+
+            transition: 0.3s;
+        }
+
+        .view-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Empty */
+
+        .empty-matches {
+            text-align: center;
+
+            background: rgba(255, 255, 255, 0.95);
+
+            padding: 60px 25px;
+
+            border-radius: 20px;
+
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .empty-icon {
+            font-size: 65px;
+            margin-bottom: 15px;
+        }
+
+        .empty-matches h2 {
+            margin-bottom: 10px;
+        }
+
+        .empty-matches p {
+            color: #777;
+            line-height: 1.6;
+        }
+
+        /* Back */
+
+        .back-section {
+            margin-top: 35px;
+            text-align: center;
+        }
+
+        .back-btn {
+            display: inline-block;
+
+            text-decoration: none;
+
+            padding: 12px 20px;
+
+            border-radius: 10px;
+
+            font-weight: bold;
+
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            transform: translateX(-3px);
+        }
+
+        /* Mobile */
+
+        @media (max-width: 600px) {
+
+            .matches-page {
+                padding: 25px 15px;
+            }
+
+            .matches-header h1 {
+                font-size: 30px;
+            }
+
+            .item-details {
+                grid-template-columns: 1fr;
+            }
+
+            .match-card h2 {
+                padding-right: 0;
+                margin-top: 55px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="matches-page">
+
+    <div class="matches-container">
+
+        <!-- Header -->
+
+        <div class="matches-header">
+
+            <h1>🎯 Your Best Matches</h1>
+
+            <p>
+                Items recommended for you based on your requirements,
+                category, location and item condition.
+            </p>
+
+        </div>
+
+
+        {% if matches %}
+
+        <div class="matches-grid">
+
+            {% for match in matches %}
+
+            <div class="match-card">
+
+                <!-- Match Score -->
+
+                {% if match["score"] >= 70 %}
+
+                    <div class="match-badge excellent">
+                        ⭐ {{ match["score"] }}% Match
+                    </div>
+
+                {% elif match["score"] >= 40 %}
+
+                    <div class="match-badge good">
+                        👍 {{ match["score"] }}% Match
+                    </div>
+
+                {% else %}
+
+                    <div class="match-badge normal">
+                        🎯 {{ match["score"] }}% Match
+                    </div>
+
+                {% endif %}
+
+
+                <!-- Item Icon -->
+
+                <div class="item-icon">
+                    📦
+                </div>
+
+
+                <!-- Title -->
+
+                <h2>
+                    {{ match["item"]["title"] }}
+                </h2>
+
+
+                <!-- Description -->
+
+                <p class="description">
+
+                    {{ match["item"]["description"] or
+                    "No description provided." }}
+
+                </p>
+
+
+                <!-- Item Details -->
+
+                <div class="item-details">
+
+                    <div class="detail">
+
+                        <strong>🏷️ Category</strong>
+
+                        {{ match["item"]["category"] }}
+
+                    </div>
+
+
+                    <div class="detail">
+
+                        <strong>✨ Condition</strong>
+
+                        {{ match["item"]["condition"] or
+                        "Not specified" }}
+
+                    </div>
+
+
+                    <div class="detail">
+
+                        <strong>📍 Location</strong>
+
+                        {{ match["item"]["location"] or
+                        "Not specified" }}
+
+                    </div>
+
+
+                    <div class="detail">
+
+                        <strong>📦 Quantity</strong>
+
+                        {{ match["item"]["quantity"] }}
+
+                    </div>
+
+                </div>
+
+
+                <!-- Match Reasons -->
+
+                {% if match["reasons"] %}
+
+                <div class="reasons">
+
+                    <h3>
+                        Why this item matches:
+                    </h3>
+
+                    {% for reason in match["reasons"] %}
+
+                        <span class="reason">
+                            ✓ {{ reason }}
+                        </span>
+
+                    {% endfor %}
+
+                </div>
+
+                {% endif %}
+
+
+                <!-- View -->
+
+                <a
+                    href="/item/{{ match['item']['id'] }}"
+                    class="view-btn">
+
+                    View Item →
+
+                </a>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <!-- Empty State -->
+
+        <div class="empty-matches">
+
+            <div class="empty-icon">
+                🎯
+            </div>
+
+            <h2>
+                No Matches Found
+            </h2>
+
+            <p>
+                We couldn't find suitable items for your current
+                requirements.
+                <br>
+                Try updating your profile with a category,
+                requirement and location.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- Back -->
+
+        <div class="back-section">
+
+            <a
+                href="/recipient/dashboard"
+                class="back-btn">
+
+                ← Back to Recipient Dashboard
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

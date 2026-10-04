@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Item - ShareCycle</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        .edit-item-page {
+            min-height: 100vh;
+            padding: 45px 20px;
+        }
+
+        .edit-item-container {
+            max-width: 850px;
+            margin: auto;
+        }
+
+        /* Header */
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .page-header .icon {
+            font-size: 55px;
+            margin-bottom: 10px;
+        }
+
+        .page-header h1 {
+            margin: 0;
+            font-size: 36px;
+        }
+
+        .page-header p {
+            margin-top: 10px;
+            color: #666;
+        }
+
+        /* Form card */
+
+        .form-card {
+            background: rgba(255, 255, 255, 0.96);
+
+            padding: 35px;
+
+            border-radius: 20px;
+
+            box-shadow:
+                0 10px 35px rgba(0, 0, 0, 0.09);
+
+            animation: formAppear 0.5s ease;
+        }
+
+        @keyframes formAppear {
+
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+        /* Grid */
+
+        .form-grid {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 22px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        /* Labels */
+
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .required {
+            color: #e11d48;
+        }
+
+        /* Inputs */
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+
+            width: 100%;
+
+            box-sizing: border-box;
+
+            padding: 13px 14px;
+
+            border: 1px solid #d6d6d6;
+
+            border-radius: 10px;
+
+            font-size: 15px;
+
+            background: white;
+
+            outline: none;
+
+            transition: 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+
+            border-color: #4f46e5;
+
+            box-shadow:
+                0 0 0 3px rgba(79, 70, 229, 0.12);
+
+            transform: translateY(-1px);
+        }
+
+        .form-group textarea {
+
+            min-height: 130px;
+
+            resize: vertical;
+        }
+
+        .help-text {
+
+            margin-top: 6px;
+
+            font-size: 12px;
+
+            color: #777;
+        }
+
+        /* Current item */
+
+        .current-item {
+
+            background: #f8f9ff;
+
+            border: 1px solid #e5e7eb;
+
+            padding: 15px 18px;
+
+            border-radius: 12px;
+
+            margin-bottom: 25px;
+        }
+
+        .current-item strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .current-item span {
+            color: #666;
+        }
+
+        /* Buttons */
+
+        .form-actions {
+
+            margin-top: 30px;
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 12px;
+        }
+
+        .action-btn {
+
+            display: inline-block;
+
+            padding: 13px 25px;
+
+            border-radius: 10px;
+
+            border: none;
+
+            font-size: 15px;
+
+            font-weight: bold;
+
+            text-decoration: none;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .save-btn {
+            min-width: 180px;
+        }
+
+        .cancel-btn {
+            min-width: 120px;
+            text-align: center;
+        }
+
+        /* Info */
+
+        .info-box {
+
+            margin-top: 25px;
+
+            background: rgba(255, 255, 255, 0.85);
+
+            padding: 18px 20px;
+
+            border-radius: 15px;
+
+            border: 1px solid rgba(0, 0, 0, 0.06);
+
+            color: #666;
+
+            line-height: 1.6;
+        }
+
+        /* Mobile */
+
+        @media (max-width: 700px) {
+
+            .edit-item-page {
+                padding: 25px 15px;
+            }
+
+            .form-card {
+                padding: 22px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: auto;
+            }
+
+            .page-header h1 {
+                font-size: 29px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .action-btn {
+                width: 100%;
+                box-sizing: border-box;
+                text-align: center;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="edit-item-page">
+
+    <div class="edit-item-container">
+
+        <!-- Header -->
+
+        <div class="page-header">
+
+            <div class="icon">
+                ✏️
+            </div>
+
+            <h1>
+                Edit Donation Item
+            </h1>
+
+            <p>
+                Update the information about your donated item.
+            </p>
+
+        </div>
+
+
+        <!-- Form Card -->
+
+        <div class="form-card">
+
+            <!-- Current Item -->
+
+            <div class="current-item">
+
+                <strong>
+                    📦 Currently Editing
+                </strong>
+
+                <span>
+                    {{ item["title"] }}
+                </span>
+
+            </div>
+
+
+            <!-- Form -->
+
+            <form method="POST" enctype="multipart/form-data">
+
+                <div class="form-grid">
+
+                    <!-- Title -->
+
+                    <div class="form-group full-width">
+
+                        <label for="title">
+                            Item Title
+                            <span class="required">*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="title"
+                            name="title"
+                            value="{{ item['title'] }}"
+                            placeholder="Example: Python Programming Books"
+                            required>
+
+                    </div>
+
+
+                    <!-- Category -->
+
+                    <div class="form-group">
+
+                        <label for="category">
+                            Category
+                            <span class="required">*</span>
+                        </label>
+
+                        <select
+                            id="category"
+                            name="category"
+                            required>
+
+                            <option value="">
+                                Select Category
+                            </option>
+
+                            <option value="Books"
+                                {% if item["category"] == "Books" %}selected{% endif %}>
+                                📚 Books
+                            </option>
+
+                            <option value="Clothes"
+                                {% if item["category"] == "Clothes" %}selected{% endif %}>
+                                👕 Clothes
+                            </option>
+
+                            <option value="Electronics"
+                                {% if item["category"] == "Electronics" %}selected{% endif %}>
+                                💻 Electronics
+                            </option>
+
+                            <option value="Furniture"
+                                {% if item["category"] == "Furniture" %}selected{% endif %}>
+                                🪑 Furniture
+                            </option>
+
+                            <option value="Study Materials"
+                                {% if item["category"] == "Study Materials" %}selected{% endif %}>
+                                📖 Study Materials
+                            </option>
+
+                            <option value="Toys"
+                                {% if item["category"] == "Toys" %}selected{% endif %}>
+                                🧸 Toys
+                            </option>
+
+                            <option value="Household"
+                                {% if item["category"] == "Household" %}selected{% endif %}>
+                                🏠 Household
+                            </option>
+
+                            <option value="Other"
+                                {% if item["category"] == "Other" %}selected{% endif %}>
+                                📦 Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Condition -->
+
+                    <div class="form-group">
+
+                        <label for="condition">
+                            Condition
+                            <span class="required">*</span>
+                        </label>
+
+                        <select
+                            id="condition"
+                            name="condition"
+                            required>
+
+                            <option value="">
+                                Select Condition
+                            </option>
+
+                            <option value="New"
+                                {% if item["condition"] == "New" %}selected{% endif %}>
+                                ✨ New
+                            </option>
+
+                            <option value="Like New"
+                                {% if item["condition"] == "Like New" %}selected{% endif %}>
+                                ⭐ Like New
+                            </option>
+
+                            <option value="Good"
+                                {% if item["condition"] == "Good" %}selected{% endif %}>
+                                👍 Good
+                            </option>
+
+                            <option value="Used"
+                                {% if item["condition"] == "Used" %}selected{% endif %}>
+                                📦 Used
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Quantity -->
+
+                    <div class="form-group">
+
+                        <label for="quantity">
+                            Quantity
+                            <span class="required">*</span>
+                        </label>
+
+                        <input
+                            type="number"
+                            id="quantity"
+                            name="quantity"
+                            min="1"
+                            value="{{ item['quantity'] }}"
+                            required>
+
+                    </div>
+
+
+                    <!-- Location -->
+
+                    <div class="form-group">
+
+                        <label for="location">
+                            Location
+                            <span class="required">*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="location"
+                            name="location"
+                            value="{{ item['location'] or '' }}"
+                            placeholder="Example: Chittoor"
+                            required>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="image">
+                            Item Image
+                        </label>
+
+                        {% if item["image"] %}
+
+                            <div style="margin-bottom: 10px;">
+                                <img
+                                    src="{{ url_for('uploaded_file', filename=item['image']) }}"
+                                    alt="{{ item['title'] }}"
+                                    style="
+                                        width: 180px;
+                                        height: 140px;
+                                        object-fit: cover;
+                                        border-radius: 10px;
+                                    ">
+                            </div>
+
+                        {% endif %}
+
+                        <input
+                            type="file"
+                            id="image"
+                            name="image"
+                            accept=".jpg,.jpeg,.png,.webp">
+
+                        <small>
+                            Upload a new image only if you want to replace the current image.
+                        </small>
+
+                    </div>
+
+
+                    <!-- Description -->
+
+                    <div class="form-group full-width">
+
+                        <label for="description">
+                            Description
+                        </label>
+
+                        <textarea
+                            id="description"
+                            name="description"
+                            placeholder="Describe the item...">{{ item["description"] or "" }}</textarea>
+
+                        <span class="help-text">
+                            Adding useful details helps recipients understand the item.
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Buttons -->
+
+                <div class="form-actions">
+
+                    <button
+                        type="submit"
+                        class="action-btn save-btn">
+
+                        💾 Save Changes
+
+                    </button>
+
+
+                    <a
+                        href="/my-items"
+                        class="action-btn cancel-btn">
+
+                        ❌ Cancel
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+
+        <!-- Information -->
+
+        <div class="info-box">
+
+            💡 <strong>Note:</strong>
+
+            You can edit an item only while it is still
+            <strong>Available</strong>. Once a donation request has
+            been accepted, the item is reserved and its details
+            cannot be changed.
+
+        </div>
+
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

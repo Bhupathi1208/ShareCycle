@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>ShareCycle - Give. Share. Impact.</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        /* ==============================
+           HOME PAGE
+           ============================== */
+
+        .home-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 18px 7%;
+
+            background: rgba(255,255,255,0.85);
+
+            backdrop-filter: blur(12px);
+
+            position: sticky;
+            top: 0;
+
+            z-index: 100;
+
+            box-shadow:
+                0 4px 20px rgba(0,0,0,0.06);
+        }
+
+
+        .brand {
+            font-size: 27px;
+
+            font-weight: bold;
+
+            color: #2563eb;
+        }
+
+
+        .brand span {
+            color: #16a34a;
+        }
+
+
+        .home-nav-links {
+            display: flex;
+
+            gap: 20px;
+
+            align-items: center;
+        }
+
+
+        .home-nav-links a {
+            font-weight: 600;
+
+            color: #374151;
+        }
+
+
+        .login-btn {
+            padding: 9px 18px;
+
+            border-radius: 8px;
+
+            background: #2563eb;
+
+            color: white !important;
+        }
+
+
+        /* HERO */
+
+        .home-hero {
+
+            min-height: 85vh;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 50px;
+
+            padding: 70px 8%;
+
+            overflow: hidden;
+        }
+
+
+        .hero-content {
+            max-width: 650px;
+
+            animation: heroEntrance 1s ease;
+        }
+
+
+        .hero-badge {
+
+            display: inline-block;
+
+            padding: 8px 15px;
+
+            border-radius: 30px;
+
+            background: #dcfce7;
+
+            color: #166534;
+
+            font-weight: bold;
+
+            font-size: 13px;
+
+            margin-bottom: 20px;
+
+            animation: floating 3s ease-in-out infinite;
+        }
+
+
+        .hero-title {
+
+            font-size: clamp(42px, 6vw, 70px);
+
+            line-height: 1.05;
+
+            margin-bottom: 20px;
+
+            color: #111827;
+        }
+
+
+        .hero-title span {
+
+            background: linear-gradient(
+                135deg,
+                #2563eb,
+                #16a34a
+            );
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+        }
+
+
+        .hero-description {
+
+            font-size: 18px;
+
+            line-height: 1.7;
+
+            color: #6b7280;
+
+            margin-bottom: 30px;
+        }
+
+
+        .hero-buttons {
+
+            display: flex;
+
+            gap: 15px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .primary-btn,
+        .secondary-btn {
+
+            padding: 14px 25px;
+
+            border-radius: 10px;
+
+            font-weight: bold;
+
+            transition: all 0.25s ease;
+        }
+
+
+        .primary-btn {
+
+            background: linear-gradient(
+                135deg,
+                #2563eb,
+                #4f46e5
+            );
+
+            color: white;
+        }
+
+
+        .secondary-btn {
+
+            background: white;
+
+            color: #2563eb;
+
+            border: 2px solid #2563eb;
+        }
+
+
+        .primary-btn:hover,
+        .secondary-btn:hover {
+
+            transform: translateY(-4px);
+
+            box-shadow:
+                0 12px 25px rgba(0,0,0,0.12);
+        }
+
+
+        /* HERO VISUAL */
+
+        .hero-visual {
+
+            width: 420px;
+
+            height: 420px;
+
+            position: relative;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+        }
+
+
+        .circle {
+
+            width: 300px;
+
+            height: 300px;
+
+            border-radius: 50%;
+
+            background: linear-gradient(
+                135deg,
+                #dbeafe,
+                #dcfce7
+            );
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 110px;
+
+            box-shadow:
+                0 20px 60px rgba(37,99,235,0.15);
+
+            animation:
+                floating 4s ease-in-out infinite;
+        }
+
+
+        .floating-item {
+
+            position: absolute;
+
+            width: 65px;
+
+            height: 65px;
+
+            border-radius: 18px;
+
+            background: white;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 30px;
+
+            box-shadow:
+                0 10px 30px rgba(0,0,0,0.12);
+
+            animation: floating 3s ease-in-out infinite;
+        }
+
+
+        .item-one {
+            top: 30px;
+            right: 30px;
+        }
+
+
+        .item-two {
+            bottom: 40px;
+            left: 20px;
+
+            animation-delay: 1s;
+        }
+
+
+        .item-three {
+            top: 160px;
+            right: -5px;
+
+            animation-delay: 2s;
+        }
+
+
+        /* SECTION */
+
+        .home-section {
+
+            padding: 80px 8%;
+
+            text-align: center;
+        }
+
+
+        .section-title {
+
+            font-size: 35px;
+
+            margin-bottom: 12px;
+        }
+
+
+        .section-description {
+
+            color: #6b7280;
+
+            max-width: 650px;
+
+            margin: auto;
+
+            line-height: 1.6;
+        }
+
+
+        /* HOW IT WORKS */
+
+        .steps {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 25px;
+
+            margin-top: 45px;
+        }
+
+
+        .step-card {
+
+            background: rgba(255,255,255,0.9);
+
+            padding: 30px;
+
+            border-radius: 18px;
+
+            box-shadow:
+                0 8px 30px rgba(0,0,0,0.07);
+
+            transition:
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+
+        .step-card:hover {
+
+            transform:
+                translateY(-10px);
+
+            box-shadow:
+                0 18px 40px rgba(0,0,0,0.12);
+        }
+
+
+        .step-icon {
+
+            width: 70px;
+
+            height: 70px;
+
+            margin: 0 auto 20px;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: #eff6ff;
+
+            font-size: 32px;
+
+            animation:
+                floating 3s ease-in-out infinite;
+        }
+
+
+        .step-card p {
+
+            color: #6b7280;
+
+            line-height: 1.6;
+
+            margin-top: 10px;
+        }
+
+
+        /* IMPACT */
+
+        .impact-section {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #1e3a8a,
+                    #312e81
+                );
+
+            color: white;
+
+            padding: 70px 8%;
+
+            text-align: center;
+        }
+
+
+        .impact-title {
+
+            font-size: 35px;
+
+            margin-bottom: 40px;
+        }
+
+
+        .impact-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 20px;
+        }
+
+
+        .impact-card {
+
+            padding: 25px;
+
+            border-radius: 15px;
+
+            background:
+                rgba(255,255,255,0.10);
+
+            backdrop-filter: blur(8px);
+
+            transition:
+                transform 0.3s ease;
+        }
+
+
+        .impact-card:hover {
+
+            transform:
+                translateY(-7px);
+        }
+
+
+        .impact-number {
+
+            font-size: 36px;
+
+            font-weight: bold;
+
+            margin-bottom: 8px;
+        }
+
+
+        .impact-label {
+
+            opacity: 0.85;
+        }
+
+
+        /* FOOTER */
+
+        .home-footer {
+
+            text-align: center;
+
+            padding: 30px;
+
+            background: #111827;
+
+            color: #d1d5db;
+        }
+
+
+        .home-footer strong {
+
+            color: white;
+        }
+
+
+        /* MOBILE */
+
+        @media (max-width: 900px) {
+
+            .home-hero {
+
+                flex-direction: column;
+
+                text-align: center;
+
+                padding-top: 50px;
+            }
+
+
+            .hero-buttons {
+
+                justify-content: center;
+            }
+
+
+            .hero-visual {
+
+                transform: scale(0.85);
+            }
+
+
+            .steps {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .impact-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+        }
+
+
+        @media (max-width: 600px) {
+
+            .home-navbar {
+
+                flex-direction: column;
+
+                gap: 15px;
+            }
+
+
+            .home-nav-links {
+
+                gap: 12px;
+
+                flex-wrap: wrap;
+
+                justify-content: center;
+            }
+
+
+            .hero-title {
+
+                font-size: 42px;
+            }
+
+
+            .hero-visual {
+
+                width: 320px;
+
+                height: 320px;
+            }
+
+
+            .circle {
+
+                width: 230px;
+
+                height: 230px;
+
+                font-size: 80px;
+            }
+
+
+            .impact-grid {
+
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ==========================
+     NAVIGATION
+     ========================== -->
+
+<nav class="home-navbar">
+
+    <div class="brand">
+        ♻️ Share<span>Cycle</span>
+    </div>
+
+
+    <div class="home-nav-links">
+
+        <a href="#how-it-works">
+            How It Works
+        </a>
+
+        <a href="#impact">
+            Impact
+        </a>
+
+        <a href="/register">
+            Register
+        </a>
+
+        <a href="/login"
+           class="login-btn">
+            Login
+        </a>
+
+    </div>
+
+</nav>
+
+
+<!-- ==========================
+     HERO
+     ========================== -->
+
+<section class="home-hero">
+
+
+    <div class="hero-content">
+
+        <div class="hero-badge">
+            🌱 Give what you don't need
+        </div>
+
+
+        <h1 class="hero-title">
+
+            Give Items a
+            <span>Second Life.</span>
+
+        </h1>
+
+
+        <p class="hero-description">
+
+            ShareCycle connects people who have unused
+            items with people who actually need them.
+
+            Donate books, clothes, electronics, furniture
+            and more — and make a real difference.
+
+        </p>
+
+
+        <div class="hero-buttons">
+
+            <a href="/register"
+               class="primary-btn">
+
+                🎁 Start Donating
+
+            </a>
+
+
+            <a href="/login"
+               class="secondary-btn">
+
+                🔎 Find Items
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- ANIMATED VISUAL -->
+
+    <div class="hero-visual">
+
+
+        <div class="circle">
+            ♻️
+        </div>
+
+
+        <div class="floating-item item-one">
+            📚
+        </div>
+
+
+        <div class="floating-item item-two">
+            👕
+        </div>
+
+
+        <div class="floating-item item-three">
+            💻
+        </div>
+
+    </div>
+
+
+</section>
+
+<!-- Impact Statistics -->
+<section class="impact-section">
+
+    <div class="section-title">
+        <h2>Our Impact</h2>
+        <p>Every donation helps make a difference.</p>
+    </div>
+
+    <div class="impact-grid">
+
+        <div class="impact-card">
+            <div class="impact-icon">👥</div>
+            <h3>{{ total_users }}</h3>
+            <p>Registered Users</p>
+        </div>
+
+        <div class="impact-card">
+            <div class="impact-icon">🎁</div>
+            <h3>{{ total_items }}</h3>
+            <p>Items Listed</p>
+        </div>
+
+        <div class="impact-card">
+            <div class="impact-icon">📦</div>
+            <h3>{{ available_items }}</h3>
+            <p>Items Available</p>
+        </div>
+
+        <div class="impact-card">
+            <div class="impact-icon">🤝</div>
+            <h3>{{ completed_donations }}</h3>
+            <p>Completed Donations</p>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- How ShareCycle Works -->
+<section class="how-it-works">
+
+    <div class="section-title">
+        <h2>How ShareCycle Works</h2>
+        <p>Simple steps to give unused items a new purpose.</p>
+    </div>
+
+    <div class="steps-container">
+
+        <div class="step-card">
+            <div class="step-number">1</div>
+            <div class="step-icon">🎁</div>
+            <h3>List an Item</h3>
+            <p>
+                Donors add items they no longer need,
+                along with category, condition and location.
+            </p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-number">2</div>
+            <div class="step-icon">🤖</div>
+            <h3>Smart Matching</h3>
+            <p>
+                ShareCycle matches available items
+                with recipients based on their requirements.
+            </p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-number">3</div>
+            <div class="step-icon">📩</div>
+            <h3>Request an Item</h3>
+            <p>
+                Recipients can browse suitable items
+                and send a donation request.
+            </p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-number">4</div>
+            <div class="step-icon">🤝</div>
+            <h3>Complete Donation</h3>
+            <p>
+                The donor accepts the request and
+                the item reaches the recipient.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ==========================
+     IMPACT
+     ========================== -->
+
+<section class="impact-section"
+         id="impact">
+
+
+    <h2 class="impact-title">
+        Making a Difference Together 🌍
+    </h2>
+
+
+    <div class="impact-grid">
+
+
+        <div class="impact-card">
+
+            <div class="impact-number">
+                ♻️
+            </div>
+
+            <div class="impact-label">
+                Reuse Unused Items
+            </div>
+
+        </div>
+
+
+        <div class="impact-card">
+
+            <div class="impact-number">
+                🤝
+            </div>
+
+            <div class="impact-label">
+                Connect Communities
+            </div>
+
+        </div>
+
+
+        <div class="impact-card">
+
+            <div class="impact-number">
+                📚
+            </div>
+
+            <div class="impact-label">
+                Support Students
+            </div>
+
+        </div>
+
+
+        <div class="impact-card">
+
+            <div class="impact-number">
+                🌱
+            </div>
+
+            <div class="impact-label">
+                Reduce Waste
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- ==========================
+     FOOTER
+     ========================== -->
+
+<footer class="home-footer">
+
+    <p>
+
+        <strong>ShareCycle</strong>
+
+        — Give. Share. Impact.
+
+    </p>
+
+    <p>
+
+        Built as a CSE social-impact project.
+
+    </p>
+
+</footer>
+
+
+</body>
+
+</html>

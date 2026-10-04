@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Profile - ShareCycle</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        .profile-page {
+            min-height: 100vh;
+            padding: 45px 20px;
+        }
+
+        .profile-container {
+            max-width: 850px;
+            margin: auto;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+
+            margin: 0 auto 15px;
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 36px;
+
+            background: #f0f0ff;
+        }
+
+        .profile-header h1 {
+            margin: 0;
+            font-size: 36px;
+        }
+
+        .profile-header p {
+            color: #666;
+            margin-top: 8px;
+        }
+
+        .profile-card {
+            background: rgba(255, 255, 255, 0.97);
+
+            padding: 35px;
+
+            border-radius: 20px;
+
+            box-shadow:
+                0 10px 35px rgba(0, 0, 0, 0.08);
+
+            animation: profileAppear 0.5s ease;
+        }
+
+        @keyframes profileAppear {
+
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+        .account-info {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 15px;
+
+            margin-bottom: 30px;
+
+            padding-bottom: 25px;
+
+            border-bottom: 1px solid #eee;
+        }
+
+        .account-detail {
+            padding: 15px;
+
+            background: #f8f9fa;
+
+            border-radius: 10px;
+        }
+
+        .account-label {
+            display: block;
+
+            font-size: 12px;
+
+            color: #777;
+
+            margin-bottom: 5px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.5px;
+        }
+
+        .account-value {
+            font-weight: bold;
+
+            word-break: break-word;
+        }
+
+        .role-badge {
+            display: inline-block;
+
+            padding: 5px 10px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+
+            background: #eef2ff;
+        }
+
+        .section-title {
+            margin-bottom: 20px;
+        }
+
+        .section-title h2 {
+            margin: 0;
+
+            font-size: 21px;
+        }
+
+        .section-title p {
+            margin-top: 6px;
+
+            color: #777;
+
+            font-size: 14px;
+        }
+
+        .form-grid {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 22px;
+        }
+
+        .form-group {
+            display: flex;
+
+            flex-direction: column;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-weight: bold;
+
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+
+            box-sizing: border-box;
+
+            padding: 13px 14px;
+
+            border: 1px solid #d6d6d6;
+
+            border-radius: 10px;
+
+            font-size: 15px;
+
+            outline: none;
+
+            background: white;
+
+            transition: 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+
+            border-color: #4f46e5;
+
+            box-shadow:
+                0 0 0 3px rgba(79, 70, 229, 0.12);
+
+            transform: translateY(-1px);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+
+            resize: vertical;
+        }
+
+        .help-text {
+            margin-top: 6px;
+
+            color: #777;
+
+            font-size: 12px;
+
+            line-height: 1.4;
+        }
+
+        .form-actions {
+            margin-top: 30px;
+
+            display: flex;
+
+            justify-content: center;
+        }
+
+        .save-btn {
+            border: none;
+
+            padding: 14px 35px;
+
+            border-radius: 11px;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            min-width: 210px;
+
+            transition: 0.3s;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .save-btn:active {
+            transform: scale(0.97);
+        }
+
+        .back-section {
+            text-align: center;
+
+            margin-top: 25px;
+        }
+
+        .back-btn {
+            text-decoration: none;
+
+            font-weight: bold;
+        }
+
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 700px) {
+
+            .profile-page {
+                padding: 25px 15px;
+            }
+
+            .profile-card {
+                padding: 22px;
+            }
+
+            .profile-header h1 {
+                font-size: 29px;
+            }
+
+            .account-info {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: auto;
+            }
+
+            .save-btn {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="profile-page">
+
+    <div class="profile-container">
+
+
+        <!-- PROFILE HEADER -->
+
+        <div class="profile-header">
+
+            <div class="profile-avatar">
+                👤
+            </div>
+
+            <h1>
+                My Profile
+            </h1>
+
+            <p>
+                Manage your ShareCycle account information.
+            </p>
+
+        </div>
+
+
+        <!-- PROFILE CARD -->
+
+        <div class="profile-card">
+
+
+            <!-- ACCOUNT INFORMATION -->
+
+            <div class="account-info">
+
+
+                <!-- EMAIL -->
+
+                <div class="account-detail">
+
+                    <span class="account-label">
+                        Email
+                    </span>
+
+                    <span class="account-value">
+                        {{ user["email"] }}
+                    </span>
+
+                </div>
+
+
+                <!-- CURRENT MODE -->
+
+                <div class="account-detail">
+
+                    <span class="account-label">
+                        Current Mode
+                    </span>
+
+                    <span class="role-badge">
+
+                        {% if session.get("current_mode") == "donor" %}
+
+                            🎁 Donor
+
+                        {% elif session.get("current_mode") == "recipient" %}
+
+                            🔎 Recipient
+
+                        {% else %}
+
+                            Not Selected
+
+                        {% endif %}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- SECTION TITLE -->
+
+            <div class="section-title">
+
+                <h2>
+                    Personal Information
+                </h2>
+
+                <p>
+                    Update the information used for donations and matching.
+                </p>
+
+            </div>
+
+
+            <!-- PROFILE FORM -->
+
+            <form method="POST">
+
+
+                <div class="form-grid">
+
+
+                    <!-- NAME -->
+
+                    <div class="form-group">
+
+                        <label for="name">
+                            Full Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            value="{{ user['name'] }}"
+                            placeholder="Enter your full name"
+                            required>
+
+                    </div>
+
+
+                    <!-- PHONE -->
+
+                    <div class="form-group">
+
+                        <label for="phone">
+                            Phone Number
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="phone"
+                            name="phone"
+                            value="{{ user['phone'] or '' }}"
+                            placeholder="Enter your phone number">
+
+                    </div>
+
+
+                    <!-- LOCATION -->
+
+                    <div class="form-group">
+
+                        <label for="location">
+                            Location
+                        </label>
+
+                        <input
+                            type="text"
+                            id="location"
+                            name="location"
+                            value="{{ user['location'] or '' }}"
+                            placeholder="Example: Chittoor">
+
+                        <span class="help-text">
+                            Your location helps ShareCycle find nearby donation matches.
+                        </span>
+
+                    </div>
+
+
+                    <!-- CATEGORY -->
+
+                    <div class="form-group">
+
+                        <label for="category">
+                            Preferred Category
+                        </label>
+
+                        <select
+                            id="category"
+                            name="category">
+
+                            <option value="">
+                                Select Category
+                            </option>
+
+                            <option
+                                value="Books"
+                                {% if user["category"] == "Books" %}selected{% endif %}>
+                                Books
+                            </option>
+
+                            <option
+                                value="Clothes"
+                                {% if user["category"] == "Clothes" %}selected{% endif %}>
+                                Clothes
+                            </option>
+
+                            <option
+                                value="Electronics"
+                                {% if user["category"] == "Electronics" %}selected{% endif %}>
+                                Electronics
+                            </option>
+
+                            <option
+                                value="Furniture"
+                                {% if user["category"] == "Furniture" %}selected{% endif %}>
+                                Furniture
+                            </option>
+
+                            <option
+                                value="Study Materials"
+                                {% if user["category"] == "Study Materials" %}selected{% endif %}>
+                                Study Materials
+                            </option>
+
+                            <option
+                                value="Toys"
+                                {% if user["category"] == "Toys" %}selected{% endif %}>
+                                Toys
+                            </option>
+
+                            <option
+                                value="Household"
+                                {% if user["category"] == "Household" %}selected{% endif %}>
+                                Household
+                            </option>
+
+                            <option
+                                value="Other"
+                                {% if user["category"] == "Other" %}selected{% endif %}>
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- REQUIREMENT -->
+
+                    <div class="form-group full-width">
+
+                        <label for="requirement">
+                            Requirement
+                        </label>
+
+                        <textarea
+                            id="requirement"
+                            name="requirement"
+                            placeholder="Example: I need Python programming books for my CSE studies.">{{ user["requirement"] or "" }}</textarea>
+
+                        <span class="help-text">
+
+                            Describe what you need. This information is used by the
+                            ShareCycle matching algorithm to recommend suitable items.
+
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- SAVE BUTTON -->
+
+                <div class="form-actions">
+
+                    <button
+                        type="submit"
+                        class="save-btn">
+
+                        💾 Save Changes
+
+                    </button>
+
+                </div>
+
+
+            </form>
+
+
+        </div>
+
+
+        <!-- BACK BUTTON -->
+
+        <div class="back-section">
+
+            {% if session.get("current_mode") == "donor" %}
+
+                <a
+                    href="{{ url_for('donor_dashboard') }}"
+                    class="back-btn">
+
+                    ← Back to Donor Dashboard
+
+                </a>
+
+            {% elif session.get("current_mode") == "recipient" %}
+
+                <a
+                    href="{{ url_for('recipient_dashboard') }}"
+                    class="back-btn">
+
+                    ← Back to Recipient Dashboard
+
+                </a>
+
+            {% else %}
+
+                <a
+                    href="{{ url_for('choose_mode') }}"
+                    class="back-btn">
+
+                    ← Back to Choose Mode
+
+                </a>
+
+            {% endif %}
+
+        </div>
+
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Page Not Found - ShareCycle</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        .error-page {
+            min-height: 100vh;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 30px;
+        }
+
+
+        .error-card {
+            width: 100%;
+
+            max-width: 550px;
+
+            background: rgba(255, 255, 255, 0.95);
+
+            padding: 50px 35px;
+
+            border-radius: 20px;
+
+            text-align: center;
+
+            box-shadow:
+                0 15px 40px
+                rgba(0, 0, 0, 0.10);
+
+            animation:
+                heroEntrance 0.7s ease;
+        }
+
+
+        .error-icon {
+            font-size: 75px;
+
+            margin-bottom: 15px;
+
+            animation:
+                floating 3s ease-in-out infinite;
+        }
+
+
+        .error-code {
+            font-size: 72px;
+
+            font-weight: bold;
+
+            background: linear-gradient(
+                135deg,
+                #2563eb,
+                #7c3aed
+            );
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+
+            margin-bottom: 10px;
+        }
+
+
+        .error-card h1 {
+            font-size: 28px;
+
+            margin-bottom: 12px;
+        }
+
+
+        .error-card p {
+            color: #6b7280;
+
+            line-height: 1.6;
+
+            margin-bottom: 25px;
+        }
+
+
+        .home-btn {
+            display: inline-block;
+
+            padding: 11px 22px;
+
+            border-radius: 9px;
+
+            background: linear-gradient(
+                135deg,
+                #2563eb,
+                #4f46e5
+            );
+
+            color: white;
+
+            font-weight: bold;
+
+            text-decoration: none;
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        .home-btn:hover {
+            color: white;
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 8px 20px
+                rgba(37, 99, 235, 0.25);
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <div class="error-page">
+
+        <div class="error-card">
+
+            <div class="error-icon">
+                🔎
+            </div>
+
+
+            <div class="error-code">
+                404
+            </div>
+
+
+            <h1>
+                Page Not Found
+            </h1>
+
+
+            <p>
+                Sorry, the page you are looking for
+                does not exist or may have been moved.
+            </p>
+
+
+            <a href="{{ url_for('index') }}"
+               class="home-btn">
+
+                🏠 Go to Home
+
+            </a>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

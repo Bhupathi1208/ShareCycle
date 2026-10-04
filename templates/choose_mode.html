@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Choose Mode - ShareCycle</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        .mode-page {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 20px;
+        }
+
+        .mode-container {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .mode-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .mode-icon {
+            font-size: 55px;
+            margin-bottom: 10px;
+        }
+
+        .mode-title {
+            font-size: 34px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .mode-subtitle {
+            color: #6b7280;
+            font-size: 17px;
+        }
+
+        .mode-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        .mode-card {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.10);
+            border: 2px solid transparent;
+            transition: 0.3s;
+        }
+
+        .mode-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 18px 45px rgba(0,0,0,0.15);
+        }
+
+        .donor-card:hover {
+            border-color: #16a34a;
+        }
+
+        .recipient-card:hover {
+            border-color: #2563eb;
+        }
+
+        .mode-card-icon {
+            font-size: 55px;
+            margin-bottom: 15px;
+        }
+
+        .mode-card h2 {
+            margin-bottom: 12px;
+        }
+
+        .mode-card p {
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .mode-button {
+            display: inline-block;
+            padding: 12px 25px;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .donor-button {
+            background: #16a34a;
+        }
+
+        .recipient-button {
+            background: #2563eb;
+        }
+
+        @media (max-width: 700px) {
+
+            .mode-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .mode-title {
+                font-size: 28px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="mode-page">
+
+    <div class="mode-container">
+
+        <div class="mode-header">
+
+            <div class="mode-icon">
+                🌱
+            </div>
+
+            <div class="mode-title">
+                Welcome to ShareCycle
+            </div>
+
+            <div class="mode-subtitle">
+
+                Hi {{ session["user_name"] }}!
+                What would you like to do today?
+
+            </div>
+
+        </div>
+
+
+        <div class="mode-cards">
+
+
+            <!-- DONOR -->
+
+            <a href="{{ url_for('switch_to_donor') }}"
+               class="mode-card donor-card">
+
+                <div class="mode-card-icon">
+                    🎁
+                </div>
+
+                <h2>
+                    Donate Items
+                </h2>
+
+                <p>
+                    Share your unused books, clothes,
+                    furniture, electronics and other
+                    useful items with people who need them.
+                </p>
+
+                <span class="mode-button donor-button">
+                    Continue as Donor
+                </span>
+
+            </a>
+
+
+            <!-- RECIPIENT -->
+
+            <a href="{{ url_for('switch_to_recipient') }}"
+               class="mode-card recipient-card">
+
+                <div class="mode-card-icon">
+                    🔎
+                </div>
+
+                <h2>
+                    Find Items
+                </h2>
+
+                <p>
+                    Search for useful items and request
+                    donations that match your requirements.
+                </p>
+
+                <span class="mode-button recipient-button">
+                    Continue as Recipient
+                </span>
+
+            </a>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Recipient Dashboard - ShareCycle</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        .dashboard-page {
+            min-height: 100vh;
+        }
+
+        /* NAVBAR */
+
+        .dashboard-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 16px 6%;
+
+            background: rgba(255,255,255,0.92);
+
+            backdrop-filter: blur(15px);
+
+            position: sticky;
+            top: 0;
+
+            z-index: 100;
+
+            box-shadow:
+                0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        .dashboard-logo {
+            font-size: 26px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .dashboard-logo span {
+            color: #16a34a;
+        }
+
+        .dashboard-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+
+            border-radius: 50%;
+
+            background: linear-gradient(
+                135deg,
+                #2563eb,
+                #16a34a
+            );
+
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-weight: bold;
+
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        .logout-btn {
+            padding: 8px 15px;
+
+            border-radius: 8px;
+
+            background: #fee2e2;
+
+            color: #991b1b;
+
+            font-weight: bold;
+
+            transition: 0.25s ease;
+        }
+
+        .logout-btn:hover {
+            background: #fecaca;
+
+            transform: translateY(-2px);
+        }
+
+
+        /* MAIN */
+
+        .dashboard-main {
+            width: 90%;
+            max-width: 1200px;
+
+            margin: 40px auto;
+        }
+
+        .welcome-section {
+            margin-bottom: 30px;
+
+            animation: heroEntrance 0.7s ease;
+        }
+
+        .welcome-section h1 {
+            font-size: 38px;
+        }
+
+        .welcome-section h1 span {
+            background: linear-gradient(
+                135deg,
+                #2563eb,
+                #16a34a
+            );
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+        }
+
+        .welcome-section p {
+            color: #6b7280;
+
+            font-size: 16px;
+        }
+
+
+        /* QUICK ACTIONS */
+
+        .section-heading {
+            margin-bottom: 18px;
+
+            font-size: 24px;
+        }
+
+        .action-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 20px;
+
+            margin-bottom: 40px;
+        }
+
+        .action-card {
+            background: white;
+
+            padding: 25px;
+
+            border-radius: 16px;
+
+            box-shadow:
+                0 6px 22px rgba(0,0,0,0.07);
+
+            transition:
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+
+            position: relative;
+
+            overflow: hidden;
+        }
+
+        .action-card::before {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 4px;
+
+            background: linear-gradient(
+                90deg,
+                #2563eb,
+                #16a34a
+            );
+
+            transform: scaleX(0);
+
+            transform-origin: left;
+
+            transition:
+                transform 0.3s ease;
+        }
+
+        .action-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .action-card:hover {
+            transform: translateY(-8px);
+
+            box-shadow:
+                0 16px 35px rgba(0,0,0,0.12);
+        }
+
+        .action-icon {
+            font-size: 38px;
+
+            margin-bottom: 14px;
+
+            animation:
+                floating 3s ease-in-out infinite;
+        }
+
+        .action-card h3 {
+            margin-bottom: 8px;
+        }
+
+        .action-card p {
+            color: #6b7280;
+
+            font-size: 14px;
+
+            line-height: 1.5;
+
+            margin-bottom: 18px;
+        }
+
+        .action-link {
+            display: inline-block;
+
+            padding: 9px 15px;
+
+            border-radius: 8px;
+
+            background: #eff6ff;
+
+            color: #2563eb;
+
+            font-weight: bold;
+
+            transition: 0.25s ease;
+        }
+
+        .action-link:hover {
+            background: #2563eb;
+
+            color: white;
+
+            transform: translateX(4px);
+        }
+
+
+        /* FEATURE BANNER */
+
+        .feature-banner {
+            background: linear-gradient(
+                135deg,
+                #2563eb,
+                #16a34a
+            );
+
+            color: white;
+
+            padding: 30px;
+
+            border-radius: 20px;
+
+            margin-bottom: 40px;
+
+            box-shadow:
+                0 12px 30px rgba(37,99,235,0.2);
+
+            animation: heroEntrance 0.8s ease;
+        }
+
+        .feature-banner h2 {
+            margin-bottom: 10px;
+        }
+
+        .feature-banner p {
+            opacity: 0.92;
+
+            line-height: 1.6;
+
+            max-width: 750px;
+        }
+
+        .feature-button {
+            display: inline-block;
+
+            margin-top: 18px;
+
+            padding: 11px 20px;
+
+            background: white;
+
+            color: #2563eb;
+
+            border-radius: 9px;
+
+            font-weight: bold;
+
+            transition: 0.25s ease;
+        }
+
+        .feature-button:hover {
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 8px 20px rgba(0,0,0,0.15);
+        }
+
+
+        /* NOTIFICATION */
+
+        .notification-badge {
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            min-width: 22px;
+
+            height: 22px;
+
+            padding: 0 6px;
+
+            margin-left: 5px;
+
+            border-radius: 20px;
+
+            background: #ef4444;
+
+            color: white;
+
+            font-size: 11px;
+
+            font-weight: bold;
+
+            animation:
+                notificationBadgePulse 1.8s infinite;
+        }
+
+        @keyframes notificationBadgePulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.12);
+            }
+        }
+
+
+        /* FOOTER */
+
+        .dashboard-footer {
+            text-align: center;
+
+            padding: 25px;
+
+            margin-top: 50px;
+
+            color: #6b7280;
+
+            font-size: 14px;
+        }
+
+
+        /* MOBILE */
+
+        @media (max-width: 850px) {
+
+            .action-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+        }
+
+
+        @media (max-width: 600px) {
+
+            .dashboard-nav {
+                flex-direction: column;
+
+                gap: 15px;
+            }
+
+            .dashboard-user {
+                width: 100%;
+
+                justify-content: center;
+            }
+
+            .welcome-section {
+                text-align: center;
+            }
+
+            .welcome-section h1 {
+                font-size: 30px;
+            }
+
+            .action-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-banner {
+                text-align: center;
+            }
+        }
+
+        .switch-mode-btn {
+            padding: 8px 15px;
+            border-radius: 8px;
+            background: #f0fdf4;
+            color: #16a34a;
+            font-weight: bold;
+            transition: 0.25s ease;
+            text-decoration: none;
+        }
+
+        .switch-mode-btn:hover {
+            background: #16a34a;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="dashboard-page">
+
+
+    <!-- NAVIGATION -->
+
+    <nav class="dashboard-nav">
+
+        <div class="dashboard-logo">
+            ♻️ Share<span>Cycle</span>
+        </div>
+
+
+        <div class="dashboard-user">
+
+            <div class="user-avatar">
+                {{ session["user_name"][0] | upper }}
+            </div>
+
+            <strong>
+                {{ session["user_name"] }}
+            </strong>
+
+            <!-- SWITCH TO DONOR MODE -->
+            <a href="{{ url_for('switch_to_donor') }}"
+            class="switch-mode-btn">
+
+                🎁 Donate Items
+
+            </a>
+
+            <a href="/logout"
+            class="logout-btn">
+
+                Logout
+
+            </a>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- MAIN -->
+
+    <main class="dashboard-main">
+
+
+        <!-- WELCOME -->
+
+        <section class="welcome-section">
+
+            <h1>
+                Welcome,
+                <span>{{ session["user_name"] }}</span> 👋
+            </h1>
+
+            <p>
+                Find useful items from people who are
+                ready to share them with you.
+            </p>
+
+        </section>
+
+
+
+        <!-- FEATURE BANNER -->
+
+        <section class="feature-banner">
+
+            <h2>
+                🔎 Find What You Need
+            </h2>
+
+            <p>
+                ShareCycle helps you discover available
+                items based on your requirements,
+                category and location.
+            </p>
+
+            <a href="/items"
+               class="feature-button">
+
+                Browse Available Items →
+
+            </a>
+
+        </section>
+
+
+
+        <!-- QUICK ACTIONS -->
+
+        <h2 class="section-heading">
+            Quick Actions
+        </h2>
+
+
+        <div class="action-grid">
+
+
+            <!-- BROWSE ITEMS -->
+
+            <div class="action-card">
+
+                <div class="action-icon">
+                    🔎
+                </div>
+
+                <h3>
+                    Browse Items
+                </h3>
+
+                <p>
+                    Search available donated items
+                    that may match your needs.
+                </p>
+
+                <a href="/items"
+                   class="action-link">
+
+                    Browse Items →
+
+                </a>
+
+            </div>
+
+
+
+            <!-- SMART MATCHES -->
+
+            <div class="action-card">
+
+                <div class="action-icon">
+                    🎯
+                </div>
+
+                <h3>
+                    Smart Matches
+                </h3>
+
+                <p>
+                    See items matched with your
+                    category, requirements and location.
+                </p>
+
+                <a href="/recipient/matches"
+                   class="action-link">
+
+                    View Matches →
+
+                </a>
+
+            </div>
+
+
+
+            <!-- MY REQUESTS -->
+
+            <div class="action-card">
+
+                <div class="action-icon">
+                    📋
+                </div>
+
+                <h3>
+                    My Requests
+                </h3>
+
+                <p>
+                    Track the donation requests you
+                    have submitted.
+                </p>
+
+                <a href="/recipient/requests"
+                   class="action-link">
+
+                    View Requests →
+
+                </a>
+
+            </div>
+
+
+
+            <!-- NOTIFICATIONS -->
+
+            <div class="action-card">
+
+                <div class="action-icon">
+                    🔔
+                </div>
+
+                <h3>
+
+                    Notifications
+
+                    {% if unread_notifications > 0 %}
+
+                        <span class="notification-badge">
+
+                            {{ unread_notifications }}
+
+                        </span>
+
+                    {% endif %}
+
+                </h3>
+
+                <p>
+                    Check updates about your requests
+                    and donations.
+                </p>
+
+                <a href="/notifications"
+                   class="action-link">
+
+                    View Notifications →
+
+                </a>
+
+            </div>
+
+
+
+            <!-- PROFILE -->
+
+            <div class="action-card">
+
+                <div class="action-icon">
+                    👤
+                </div>
+
+                <h3>
+                    My Profile
+                </h3>
+
+                <p>
+                    Update your location, category
+                    and personal requirements.
+                </p>
+
+                <a href="/profile"
+                   class="action-link">
+
+                    View Profile →
+
+                </a>
+
+            </div>
+
+
+
+            <!-- MY IMPACT -->
+
+            <div class="action-card">
+
+                <div class="action-icon">
+                    🌱
+                </div>
+
+                <h3>
+                    My ShareCycle Journey
+                </h3>
+
+                <p>
+                    Track your requests and participate
+                    in the community sharing system.
+                </p>
+
+                <a href="/recipient/requests"
+                   class="action-link">
+
+                    Track Activity →
+
+                </a>
+
+            </div>
+
+
+        </div>
+
+
+    </main>
+
+
+
+    <!-- FOOTER -->
+
+    <footer class="dashboard-footer">
+
+        ♻️ <strong>ShareCycle</strong>
+
+        — Give. Share. Impact.
+
+    </footer>
+
+
+</div>
+
+</body>
+
+</html>

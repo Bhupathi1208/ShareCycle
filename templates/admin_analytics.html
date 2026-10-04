@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Impact Analytics - ShareCycle</title>
+    <link rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f8;
+        }
+
+        .header {
+            background-color: #222;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            width: 90%;
+            margin: 30px auto;
+        }
+
+        .back {
+            margin-bottom: 20px;
+        }
+
+        .back a {
+            text-decoration: none;
+            color: #333;
+        }
+
+        h2 {
+            margin-top: 30px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .number {
+            font-size: 32px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .chart-container {
+            background-color: white;
+            margin-top: 25px;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .bar {
+            margin: 15px 0;
+        }
+
+        .bar-label {
+            margin-bottom: 5px;
+        }
+
+        .bar-background {
+            width: 100%;
+            height: 30px;
+            background-color: #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background-color: #333;
+            color: white;
+            text-align: right;
+            padding-right: 10px;
+            line-height: 30px;
+            box-sizing: border-box;
+        }
+
+        .impact {
+            background-color: white;
+            margin-top: 25px;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .impact-number {
+            font-size: 45px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 900px) {
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="header">
+
+        <h1>ShareCycle Impact Dashboard</h1>
+
+        <p>
+            Donation and community statistics
+        </p>
+
+    </div>
+
+
+    <div class="container">
+
+
+        <div class="back">
+
+            <a href="/admin/dashboard">
+                ← Back to Admin Dashboard
+            </a>
+
+        </div>
+
+
+        <!-- USER STATISTICS -->
+
+        <h2>User Statistics</h2>
+
+        <div class="cards">
+
+            <div class="card">
+
+                <h3>Total Users</h3>
+
+                <div class="number">
+                    {{ total_users }}
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>Donors</h3>
+
+                <div class="number">
+                    {{ total_donors }}
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>Recipients</h3>
+
+                <div class="number">
+                    {{ total_recipients }}
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>Completed Donations</h3>
+
+                <div class="number">
+                    {{ completed_donations }}
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ITEM STATISTICS -->
+
+        <h2>Item Statistics</h2>
+
+        <div class="cards">
+
+            <div class="card">
+
+                <h3>Total Items</h3>
+
+                <div class="number">
+                    {{ total_items }}
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>Available</h3>
+
+                <div class="number">
+                    {{ available_items }}
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>Reserved</h3>
+
+                <div class="number">
+                    {{ reserved_items }}
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>Donated</h3>
+
+                <div class="number">
+                    {{ donated_items }}
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- REQUEST STATISTICS -->
+
+        <h2>Request Statistics</h2>
+
+        <div class="cards">
+
+            <div class="card">
+
+                <h3>Total Requests</h3>
+
+                <div class="number">
+                    {{ total_requests }}
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>Pending</h3>
+
+                <div class="number">
+                    {{ pending_requests }}
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>Accepted</h3>
+
+                <div class="number">
+                    {{ accepted_requests }}
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>Rejected</h3>
+
+                <div class="number">
+                    {{ rejected_requests }}
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- REQUEST BAR CHART -->
+
+        <div class="chart-container">
+
+            <h2>Request Overview</h2>
+
+
+            <div class="bar">
+
+                <div class="bar-label">
+                    Pending Requests
+                </div>
+
+                <div class="bar-background">
+
+                    {% if total_requests > 0 %}
+
+                    <div
+                        class="bar-fill"
+                        style="width: {{ (pending_requests / total_requests * 100) }}%;">
+
+                        {{ pending_requests }}
+
+                    </div>
+
+                    {% else %}
+
+                    <div
+                        class="bar-fill"
+                        style="width: 0%;">
+
+                        0
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <div class="bar">
+
+                <div class="bar-label">
+                    Accepted Requests
+                </div>
+
+                <div class="bar-background">
+
+                    {% if total_requests > 0 %}
+
+                    <div
+                        class="bar-fill"
+                        style="width: {{ (accepted_requests / total_requests * 100) }}%;">
+
+                        {{ accepted_requests }}
+
+                    </div>
+
+                    {% else %}
+
+                    <div
+                        class="bar-fill"
+                        style="width: 0%;">
+
+                        0
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <div class="bar">
+
+                <div class="bar-label">
+                    Rejected Requests
+                </div>
+
+                <div class="bar-background">
+
+                    {% if total_requests > 0 %}
+
+                    <div
+                        class="bar-fill"
+                        style="width: {{ (rejected_requests / total_requests * 100) }}%;">
+
+                        {{ rejected_requests }}
+
+                    </div>
+
+                    {% else %}
+
+                    <div
+                        class="bar-fill"
+                        style="width: 0%;">
+
+                        0
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <div class="bar">
+
+                <div class="bar-label">
+                    Completed Donations
+                </div>
+
+                <div class="bar-background">
+
+                    {% if total_requests > 0 %}
+
+                    <div
+                        class="bar-fill"
+                        style="width: {{ (completed_donations / total_requests * 100) }}%;">
+
+                        {{ completed_donations }}
+
+                    </div>
+
+                    {% else %}
+
+                    <div
+                        class="bar-fill"
+                        style="width: 0%;">
+
+                        0
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- IMPACT -->
+
+        <div class="impact">
+
+            <h2>Community Impact</h2>
+
+            <p>
+                Items successfully donated through ShareCycle
+            </p>
+
+            <div class="impact-number">
+                {{ donated_items }}
+            </div>
+
+            <p>
+                donated items
+            </p>
+
+        </div>
+
+
+    </div>
+
+</body>
+
+</html>

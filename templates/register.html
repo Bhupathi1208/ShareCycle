@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Register - ShareCycle</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        .register-page {
+            min-height: 100vh;
+
+            padding: 45px 20px;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+        }
+
+        .register-container {
+            width: 100%;
+
+            max-width: 650px;
+
+            animation: heroEntrance 0.8s ease;
+        }
+
+        .register-card {
+            background: rgba(255,255,255,0.95);
+
+            backdrop-filter: blur(15px);
+
+            padding: 35px;
+
+            border-radius: 20px;
+
+            box-shadow:
+                0 20px 60px rgba(0,0,0,0.12);
+
+            border: 1px solid rgba(255,255,255,0.8);
+        }
+
+        .register-icon {
+            text-align: center;
+
+            font-size: 45px;
+
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        .register-logo {
+            text-align: center;
+
+            font-size: 34px;
+
+            font-weight: bold;
+
+            color: #2563eb;
+
+            margin-top: 8px;
+        }
+
+        .register-logo span {
+            color: #16a34a;
+        }
+
+        .register-subtitle {
+            text-align: center;
+
+            color: #6b7280;
+
+            margin: 8px 0 28px;
+        }
+
+        .form-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 5px 18px;
+        }
+
+        .form-group {
+            margin-bottom: 5px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            display: block;
+
+            font-weight: 600;
+
+            margin-top: 10px;
+        }
+
+        .role-section {
+            margin-top: 15px;
+
+            padding: 15px;
+
+            border-radius: 12px;
+
+            background: #f8fafc;
+
+            border: 1px solid #e5e7eb;
+        }
+
+        .role-title {
+            font-weight: bold;
+
+            margin-bottom: 8px;
+        }
+
+        .role-options {
+            display: flex;
+
+            gap: 20px;
+        }
+
+        .role-option {
+            display: flex;
+
+            align-items: center;
+
+            gap: 6px;
+        }
+
+        .role-option input {
+            width: auto;
+
+            margin: 0;
+        }
+
+        .register-button {
+            width: 100%;
+
+            margin-top: 20px;
+
+            padding: 14px;
+
+            font-size: 16px;
+            grid-column: 1/-1;
+        }
+
+        .register-footer {
+            text-align: center;
+
+            margin-top: 20px;
+
+            color: #6b7280;
+            grid-column: 1/-1;
+        }
+
+        .register-footer a {
+            font-weight: bold;
+        }
+
+        .back-home {
+            display: block;
+
+            text-align: center;
+
+            margin-top: 18px;
+
+            color: #6b7280;
+        }
+
+        @media (max-width: 650px) {
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+            .register-card {
+                padding: 25px;
+            }
+
+            .role-options {
+                flex-direction: column;
+
+                gap: 10px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="register-page">
+
+    <div class="register-container">
+
+        <div class="register-card">
+
+            <div class="register-icon">
+                🌱
+            </div>
+
+            <div class="register-logo">
+                Share<span>Cycle</span>
+            </div>
+
+            <p class="register-subtitle">
+                Join the community and start sharing.
+            </p>
+
+
+            <form method="POST">
+
+                <div class="form-grid">
+
+
+                    <!-- NAME -->
+
+                    <div class="form-group">
+
+                        <label class="form-label">
+                            Full Name
+                        </label>
+
+                        <input
+                            type="text"
+                            name="name"
+                            placeholder="Your name"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- EMAIL -->
+
+                    <div class="form-group">
+
+                        <label class="form-label">
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
+                            name="email"
+                            placeholder="you@example.com"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- PASSWORD -->
+
+                    <div class="form-group">
+
+                        <label class="form-label">
+                            Password
+                        </label>
+
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="Create a password"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- PHONE -->
+
+                    <div class="form-group">
+
+                        <label class="form-label">
+                            Phone
+                        </label>
+
+                        <input
+                            type="text"
+                            name="phone"
+                            placeholder="Phone number"
+                        >
+
+                    </div>
+
+
+                    <!-- LOCATION -->
+
+                    <div class="form-group">
+
+                        <label class="form-label">
+                            Location
+                        </label>
+
+                        <input
+                            type="text"
+                            name="location"
+                            placeholder="City / Area"
+                        >
+
+                    </div>
+
+
+                <button
+                    type="submit"
+                    class="register-button">
+
+                    🚀 Create ShareCycle Account
+
+                </button>
+
+            </form>
+
+
+            <div class="register-footer">
+
+                Already have an account?
+
+                <a href="/login">
+                    Login
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <a href="/"
+           class="back-home">
+
+            ← Back to ShareCycle
+
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

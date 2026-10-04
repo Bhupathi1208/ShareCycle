@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ item["title"] }} - ShareCycle</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        .page-wrapper {
+            min-height: 100vh;
+            padding: 35px 20px;
+        }
+
+        .details-container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .details-card {
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 20px;
+            overflow: hidden;
+
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .item-image {
+            width: 100%;
+            max-height: 450px;
+            object-fit: cover;
+            display: block;
+            background: #f3f3f3;
+        }
+
+        .no-image {
+            height: 300px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #f3f3f3;
+            color: #888;
+
+            font-size: 18px;
+        }
+
+        .details-content {
+            padding: 30px;
+        }
+
+        .details-content h1 {
+            margin: 0 0 10px;
+            font-size: 30px;
+        }
+
+        .description-title {
+            font-size: 18px;
+            margin-top: 25px;
+            margin-bottom: 8px;
+        }
+
+        .description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .info-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(200px, 1fr));
+
+            gap: 15px;
+
+            margin-bottom: 25px;
+        }
+
+        .info-box {
+            background: #f7f7f7;
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .info-label {
+            color: #777;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-weight: bold;
+            word-break: break-word;
+        }
+
+        .donor-box {
+            padding: 18px;
+
+            background: #f5f5f5;
+
+            border-radius: 12px;
+
+            margin-bottom: 25px;
+        }
+
+        .donor-box h3 {
+            margin-top: 0;
+            margin-bottom: 12px;
+        }
+
+        .donor-info {
+            margin-bottom: 6px;
+        }
+
+        .request-section {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .request-section h3 {
+            margin-top: 0;
+        }
+
+        .message-input {
+            width: 100%;
+            box-sizing: border-box;
+
+            min-height: 100px;
+
+            padding: 12px;
+
+            border: 1px solid #ddd;
+            border-radius: 10px;
+
+            resize: vertical;
+
+            margin-bottom: 12px;
+
+            font-family: inherit;
+        }
+
+        .request-btn {
+            width: 100%;
+
+            border: none;
+
+            padding: 14px;
+
+            border-radius: 10px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .request-btn:hover {
+            opacity: 0.9;
+        }
+
+        .login-message {
+            padding: 15px;
+
+            background: #f7f7f7;
+
+            border-radius: 10px;
+
+            text-align: center;
+        }
+
+        .login-message a {
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .owner-message {
+            padding: 15px;
+
+            background: #fff8e1;
+
+            border-radius: 10px;
+
+            text-align: center;
+        }
+
+        .status {
+            display: inline-block;
+
+            padding: 7px 12px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+
+            font-weight: bold;
+
+            margin-bottom: 15px;
+        }
+
+        .available {
+            background: #e8f7ed;
+            color: #237a3b;
+        }
+
+        .unavailable {
+            background: #eeeeee;
+            color: #666;
+        }
+
+        .back-link {
+            display: block;
+
+            text-align: center;
+
+            margin-top: 20px;
+
+            text-decoration: none;
+
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+
+            .page-wrapper {
+                padding: 25px 12px;
+            }
+
+            .details-content {
+                padding: 22px;
+            }
+
+            .details-content h1 {
+                font-size: 26px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="page-wrapper">
+
+    <div class="details-container">
+
+        <div class="details-card">
+
+
+            <!-- ========================= -->
+            <!-- ITEM IMAGE -->
+            <!-- ========================= -->
+
+            {% if item["image"] %}
+
+                <img
+                    src="{{ url_for('uploaded_file', filename=item['image']) }}"
+                    alt="{{ item['title'] }}"
+                    class="item-image">
+
+            {% else %}
+
+                <div class="no-image">
+                    📦 No Image Available
+                </div>
+
+            {% endif %}
+
+
+            <!-- ========================= -->
+            <!-- ITEM DETAILS -->
+            <!-- ========================= -->
+
+            <div class="details-content">
+
+
+                <!-- TITLE -->
+
+                <h1>
+                    {{ item["title"] }}
+                </h1>
+
+
+                <!-- STATUS -->
+
+                {% if item["status"] == "Available" %}
+
+                    <span class="status available">
+                        ✓ AVAILABLE
+                    </span>
+
+                {% else %}
+
+                    <span class="status unavailable">
+                        {{ item["status"] }}
+                    </span>
+
+                {% endif %}
+
+
+                <!-- DESCRIPTION -->
+
+                <h3 class="description-title">
+                    About This Item
+                </h3>
+
+                <div class="description">
+
+                    {% if item["description"] %}
+
+                        {{ item["description"] }}
+
+                    {% else %}
+
+                        No description provided.
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- ========================= -->
+                <!-- ITEM INFORMATION -->
+                <!-- ========================= -->
+
+                <div class="info-grid">
+
+
+                    <!-- CATEGORY -->
+
+                    <div class="info-box">
+
+                        <div class="info-label">
+                            🏷️ Category
+                        </div>
+
+                        <div class="info-value">
+                            {{ item["category"] or "Not specified" }}
+                        </div>
+
+                    </div>
+
+
+                    <!-- CONDITION -->
+
+                    <div class="info-box">
+
+                        <div class="info-label">
+                            ⭐ Condition
+                        </div>
+
+                        <div class="info-value">
+                            {{ item["condition"] or "Not specified" }}
+                        </div>
+
+                    </div>
+
+
+                    <!-- QUANTITY -->
+
+                    <div class="info-box">
+
+                        <div class="info-label">
+                            🔢 Quantity
+                        </div>
+
+                        <div class="info-value">
+                            {{ item["quantity"] or "Not specified" }}
+                        </div>
+
+                    </div>
+
+
+                    <!-- LOCATION -->
+
+                    <div class="info-box">
+
+                        <div class="info-label">
+                            📍 Location
+                        </div>
+
+                        <div class="info-value">
+                            {{ item["location"] or "Not specified" }}
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- ========================= -->
+                <!-- DONOR INFORMATION -->
+                <!-- ========================= -->
+
+                <div class="donor-box">
+
+                    <h3>
+                        👤 Donor Information
+                    </h3>
+
+                    <div class="donor-info">
+
+                        <strong>
+                            {{ donor["name"] }}
+                        </strong>
+
+                    </div>
+
+                    <div class="donor-info">
+
+                        📍
+                        {{ donor["location"] or "Location not specified" }}
+
+                    </div>
+
+                </div>
+
+
+                <!-- ========================= -->
+                <!-- REQUEST SECTION -->
+                <!-- ========================= -->
+
+                {% if session.get("user_id") %}
+
+                    {% if session.get("current_mode") == "recipient"
+                          and item["status"] == "Available" %}
+
+                        {% if session.get("user_id") != item["donor_id"] %}
+
+                            <div class="request-section">
+
+                                <h3>
+                                    🎁 Request This Item
+                                </h3>
+
+                                <p>
+                                    Send a message to the donor explaining
+                                    why you need this item.
+                                </p>
+
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for('request_item', item_id=item['id']) }}">
+
+                                    <textarea
+                                        name="message"
+                                        class="message-input"
+                                        placeholder="Write a message to the donor (optional)..."></textarea>
+
+
+                                    <button
+                                        type="submit"
+                                        class="request-btn">
+
+                                        🎁 Request This Item
+
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        {% else %}
+
+                            <div class="owner-message">
+
+                                You cannot request your own item.
+
+                            </div>
+
+                        {% endif %}
+
+
+                    {% elif session.get("current_mode") == "donor" %}
+
+                        <div class="owner-message">
+
+                            Switch to
+                            <strong>Find Items</strong>
+                            mode to request items.
+
+                        </div>
+
+
+                    {% endif %}
+
+                {% else %}
+
+                    <div class="login-message">
+
+                        Please
+                        <a href="{{ url_for('login') }}">
+                            login
+                        </a>
+                        to request this item.
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- BACK -->
+
+                <a
+                    href="{{ url_for('items') }}"
+                    class="back-link">
+
+                    ← Back to Items
+
+                </a>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

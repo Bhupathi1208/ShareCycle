@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Manage Items - ShareCycle</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        .admin-page {
+            min-height: 100vh;
+            padding: 35px 20px;
+        }
+
+        .admin-container {
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        /* Header */
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        .page-header p {
+            margin-top: 7px;
+            color: #777;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            font-weight: bold;
+            padding: 10px 16px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.07);
+        }
+
+        /* Summary */
+
+        .summary-card {
+            background: rgba(255, 255, 255, 0.96);
+            padding: 20px 24px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+        }
+
+        .summary-label {
+            color: #777;
+            font-size: 14px;
+        }
+
+        .summary-number {
+            font-size: 30px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        /* Table */
+
+        .table-card {
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 18px;
+            padding: 10px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1300px;
+        }
+
+        th {
+            text-align: left;
+            padding: 15px 14px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            background: rgba(0, 0, 0, 0.035);
+        }
+
+        td {
+            padding: 15px 14px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr {
+            transition: 0.2s;
+        }
+
+        tbody tr:hover {
+            background: rgba(0, 0, 0, 0.025);
+        }
+
+        /* Item information */
+
+        .item-preview {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 300px;
+        }
+
+        .item-image {
+            width: 65px;
+            height: 65px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            flex-shrink: 0;
+        }
+
+        .item-no-image {
+            width: 65px;
+            height: 65px;
+            border-radius: 10px;
+            background: #f1f1f1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: #777;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .item-title {
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .item-description {
+            color: #777;
+            font-size: 13px;
+            margin-top: 5px;
+            max-width: 260px;
+            line-height: 1.4;
+        }
+
+        .category {
+            font-weight: 600;
+        }
+
+        .location {
+            color: #666;
+        }
+
+        .donor-name {
+            font-weight: bold;
+        }
+
+        .donor-email {
+            color: #777;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        /* Status */
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 11px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-available {
+            background: #e8f7ed;
+        }
+
+        .status-reserved {
+            background: #fff4d8;
+        }
+
+        .status-donated {
+            background: #e8f1ff;
+        }
+
+        .status-other {
+            background: #eeeeee;
+        }
+
+        /* Condition */
+
+        .condition-badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 8px;
+            background: #f1f1f1;
+            font-size: 12px;
+        }
+
+        /* Delete */
+
+        .delete-form {
+            margin: 0;
+        }
+
+        .delete-btn {
+            border: none;
+            padding: 8px 13px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            background: #ffe8e8;
+            color: #b00020;
+            transition: 0.2s;
+        }
+
+        .delete-btn:hover {
+            transform: translateY(-2px);
+            background: #ffd4d4;
+        }
+
+        /* Empty */
+
+        .empty-state {
+            text-align: center;
+            padding: 55px 20px;
+            color: #777;
+        }
+
+        .empty-state h2 {
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        /* Footer */
+
+        .page-footer {
+            margin-top: 28px;
+            padding-top: 22px;
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+            display: flex;
+            justify-content: center;
+            gap: 22px;
+            flex-wrap: wrap;
+        }
+
+        .page-footer a {
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        @media (max-width: 700px) {
+
+            .admin-page {
+                padding: 25px 12px;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .page-header h1 {
+                font-size: 28px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="admin-page">
+
+    <div class="admin-container">
+
+        <!-- Header -->
+
+        <div class="page-header">
+
+            <div>
+
+                <h1>
+                    Manage Items
+                </h1>
+
+                <p>
+                    Review and manage all donation listings on ShareCycle.
+                </p>
+
+            </div>
+
+            <a
+                href="/admin/dashboard"
+                class="back-btn">
+
+                ← Admin Dashboard
+
+            </a>
+
+        </div>
+
+
+        <!-- Summary -->
+
+        <div class="summary-card">
+
+            <div class="summary-label">
+                Total Donation Listings
+            </div>
+
+            <div class="summary-number">
+                {{ items|length }}
+            </div>
+
+        </div>
+
+
+        <!-- Items Table -->
+
+        {% if items %}
+
+        <div class="table-card">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            ID
+                        </th>
+
+                        <th>
+                            Item
+                        </th>
+
+                        <th>
+                            Category
+                        </th>
+
+                        <th>
+                            Condition
+                        </th>
+
+                        <th>
+                            Quantity
+                        </th>
+
+                        <th>
+                            Location
+                        </th>
+
+                        <th>
+                            Donor
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Created
+                        </th>
+
+                        <th>
+                            Action
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {% for item in items %}
+
+                    <tr>
+
+                        <!-- ID -->
+
+                        <td>
+                            #{{ item["id"] }}
+                        </td>
+
+
+                        <!-- Item -->
+
+                        <td>
+
+                            <div class="item-preview">
+
+                                {% if item["image"] %}
+
+                                    <img
+                                        src="{{ url_for('uploaded_file', filename=item['image']) }}"
+                                        alt="{{ item['title'] }}"
+                                        class="item-image">
+
+                                {% else %}
+
+                                    <div class="item-no-image">
+                                        No Image
+                                    </div>
+
+                                {% endif %}
+
+
+                                <div>
+
+                                    <div class="item-title">
+                                        {{ item["title"] }}
+                                    </div>
+
+                                    {% if item["description"] %}
+
+                                        <div class="item-description">
+                                            {{ item["description"] }}
+                                        </div>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- Category -->
+
+                        <td>
+
+                            <span class="category">
+                                {{ item["category"] }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- Condition -->
+
+                        <td>
+
+                            {% if item["condition"] %}
+
+                                <span class="condition-badge">
+                                    {{ item["condition"] }}
+                                </span>
+
+                            {% else %}
+
+                                —
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Quantity -->
+
+                        <td>
+                            {{ item["quantity"] }}
+                        </td>
+
+
+                        <!-- Location -->
+
+                        <td class="location">
+
+                            {% if item["location"] %}
+
+                                {{ item["location"] }}
+
+                            {% else %}
+
+                                —
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Donor -->
+
+                        <td>
+
+                            <div class="donor-name">
+                                {{ item["donor_name"] }}
+                            </div>
+
+                            <div class="donor-email">
+                                {{ item["donor_email"] }}
+                            </div>
+
+                        </td>
+
+
+                        <!-- Status -->
+
+                        <td>
+
+                            {% if item["status"] == "Available" %}
+
+                                <span class="status-badge status-available">
+                                    AVAILABLE
+                                </span>
+
+                            {% elif item["status"] == "Reserved" %}
+
+                                <span class="status-badge status-reserved">
+                                    RESERVED
+                                </span>
+
+                            {% elif item["status"] == "Donated" %}
+
+                                <span class="status-badge status-donated">
+                                    DONATED
+                                </span>
+
+                            {% else %}
+
+                                <span class="status-badge status-other">
+                                    {{ item["status"] }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Created -->
+
+                        <td>
+                            {{ item["created_at"] }}
+                        </td>
+
+
+                        <!-- Delete -->
+
+                        <td>
+
+                            <form
+                                method="POST"
+                                action="/admin/items/{{ item['id'] }}/delete"
+                                class="delete-form"
+                                onsubmit="return confirm('Are you sure you want to delete this item? This action cannot be undone.');">
+
+                                <button
+                                    type="submit"
+                                    class="delete-btn">
+
+                                    Delete
+
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="table-card">
+
+            <div class="empty-state">
+
+                <h2>
+                    No Items Found
+                </h2>
+
+                <p>
+                    There are currently no donation listings.
+                </p>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- Footer -->
+
+        <div class="page-footer">
+
+            <a href="/admin/dashboard">
+                Admin Dashboard
+            </a>
+
+            <a href="/admin/users">
+                Manage Users
+            </a>
+
+            <a href="/admin/analytics">
+                Analytics
+            </a>
+
+            <a href="/logout">
+                Logout
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Notifications - ShareCycle</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        .notifications-page {
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .notifications-container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        /* Header */
+
+        .notifications-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .notifications-title h1 {
+            margin: 0;
+            font-size: 36px;
+        }
+
+        .notifications-title p {
+            margin-top: 8px;
+            color: #666;
+        }
+
+        /* Mark all button */
+
+        .mark-all-form {
+            margin: 0;
+        }
+
+        .mark-all-btn {
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .mark-all-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Notification card */
+
+        .notification-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+
+            display: flex;
+            align-items: flex-start;
+            gap: 18px;
+
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+
+            border-left: 5px solid transparent;
+
+            transition: all 0.3s ease;
+        }
+
+        .notification-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        /* New notification */
+
+        .notification-card.new {
+            border-left-color: #4f46e5;
+            background: rgba(255, 255, 255, 1);
+        }
+
+        /* Read notification */
+
+        .notification-card.read {
+            opacity: 0.75;
+        }
+
+        /* Notification icon */
+
+        .notification-icon {
+            width: 50px;
+            height: 50px;
+
+            min-width: 50px;
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 24px;
+
+            background: #f0f0ff;
+        }
+
+        /* Notification content */
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-status {
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .new-status {
+            color: #4f46e5;
+        }
+
+        .read-status {
+            color: #777;
+        }
+
+        .notification-message {
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #222;
+        }
+
+        .notification-date {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #888;
+        }
+
+        /* Empty state */
+
+        .empty-notifications {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 60px 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .empty-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .empty-notifications h2 {
+            margin-bottom: 10px;
+        }
+
+        .empty-notifications p {
+            color: #777;
+        }
+
+        /* Back button */
+
+        .back-section {
+            margin-top: 30px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            transform: translateX(-3px);
+        }
+
+        /* Mobile */
+
+        @media (max-width: 700px) {
+
+            .notifications-page {
+                padding: 25px 15px;
+            }
+
+            .notifications-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .notifications-title h1 {
+                font-size: 28px;
+            }
+
+            .notification-card {
+                padding: 16px;
+            }
+
+            .notification-icon {
+                width: 42px;
+                height: 42px;
+                min-width: 42px;
+                font-size: 20px;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="notifications-page">
+
+    <div class="notifications-container">
+
+        <!-- Header -->
+
+        <div class="notifications-header">
+
+            <div class="notifications-title">
+
+                <h1>🔔 Notifications</h1>
+
+                <p>
+                    Stay updated with your ShareCycle activities.
+                </p>
+
+            </div>
+
+            {% if notifications %}
+
+            <form
+                method="POST"
+                action="/notifications/read-all"
+                class="mark-all-form">
+
+                <button
+                    type="submit"
+                    class="mark-all-btn">
+
+                    ✓ Mark All as Read
+
+                </button>
+
+            </form>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- Notifications -->
+
+        {% if notifications %}
+
+            {% for notification in notifications %}
+
+                <div
+                    class="notification-card
+                    {% if notification['is_read'] == 0 %}
+                        new
+                    {% else %}
+                        read
+                    {% endif %}">
+
+                    <!-- Icon -->
+
+                    <div class="notification-icon">
+
+                        {% if notification['is_read'] == 0 %}
+                            🔔
+                        {% else %}
+                            ✓
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- Content -->
+
+                    <div class="notification-content">
+
+                        {% if notification['is_read'] == 0 %}
+
+                            <div class="notification-status new-status">
+                                🔵 NEW NOTIFICATION
+                            </div>
+
+                        {% else %}
+
+                            <div class="notification-status read-status">
+                                ✓ READ
+                            </div>
+
+                        {% endif %}
+
+
+                        <p class="notification-message">
+                            {{ notification['message'] }}
+                        </p>
+
+
+                        <div class="notification-date">
+
+                            🕒 {{ notification['created_at'] }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <!-- Empty State -->
+
+            <div class="empty-notifications">
+
+                <div class="empty-icon">
+                    🔔
+                </div>
+
+                <h2>No Notifications Yet</h2>
+
+                <p>
+                    You don't have any notifications at the moment.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- Back -->
+
+        <div class="back-section">
+
+            {% if session["role"] == "donor" %}
+
+                <a
+                    href="/donor/dashboard"
+                    class="back-btn">
+
+                    ← Back to Donor Dashboard
+
+                </a>
+
+            {% elif session["role"] == "recipient" %}
+
+                <a
+                    href="/recipient/dashboard"
+                    class="back-btn">
+
+                    ← Back to Recipient Dashboard
+
+                </a>
+
+            {% else %}
+
+                <a
+                    href="/admin/dashboard"
+                    class="back-btn">
+
+                    ← Back to Admin Dashboard
+
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

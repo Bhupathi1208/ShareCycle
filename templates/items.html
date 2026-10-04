@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Browse Items - ShareCycle</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        .page-wrapper {
+            min-height: 100vh;
+            padding: 35px 20px;
+        }
+
+        .items-container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            margin-bottom: 8px;
+            font-size: 32px;
+        }
+
+        .page-header p {
+            color: #777;
+        }
+
+        /* Search */
+
+        .search-card {
+            background: rgba(255, 255, 255, 0.96);
+            padding: 22px;
+            border-radius: 18px;
+            margin-bottom: 30px;
+
+            box-shadow:
+                0 8px 25px rgba(0, 0, 0, 0.07);
+        }
+
+        .search-form {
+            display: grid;
+            grid-template-columns:
+                2fr 1fr 1fr 1fr auto;
+
+            gap: 12px;
+        }
+
+        .search-form input,
+        .search-form select {
+
+            width: 100%;
+            box-sizing: border-box;
+
+            padding: 11px 12px;
+
+            border: 1px solid #ddd;
+            border-radius: 9px;
+
+            outline: none;
+        }
+
+        .search-form input:focus,
+        .search-form select:focus {
+            border-color: #777;
+        }
+
+        .search-btn {
+            border: none;
+            padding: 11px 18px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Items */
+
+        .items-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(260px, 1fr));
+
+            gap: 22px;
+        }
+
+        .item-card {
+
+            background: rgba(255, 255, 255, 0.97);
+
+            border-radius: 18px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 8px 25px rgba(0, 0, 0, 0.07);
+
+            transition: 0.3s;
+
+        }
+
+        .item-card:hover {
+
+            transform: translateY(-5px);
+
+            box-shadow:
+                0 14px 32px rgba(0, 0, 0, 0.11);
+
+        }
+
+        /* Image */
+
+        .item-image {
+
+            width: 100%;
+            height: 210px;
+
+            object-fit: cover;
+
+            display: block;
+
+            background: #f2f2f2;
+
+        }
+
+        .no-image {
+
+            width: 100%;
+            height: 210px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            background: #f3f3f3;
+
+            color: #888;
+
+            font-size: 14px;
+        }
+
+        /* Content */
+
+        .item-content {
+
+            padding: 20px;
+
+        }
+
+        .item-title {
+
+            font-size: 19px;
+
+            font-weight: bold;
+
+            margin-bottom: 8px;
+
+        }
+
+        .item-description {
+
+            color: #777;
+
+            font-size: 14px;
+
+            line-height: 1.5;
+
+            min-height: 42px;
+
+        }
+
+        .item-info {
+
+            margin-top: 15px;
+
+            display: grid;
+
+            gap: 7px;
+
+            font-size: 13px;
+
+            color: #666;
+
+        }
+
+        .item-info strong {
+
+            color: #333;
+
+        }
+
+        .view-btn {
+
+            display: block;
+
+            text-align: center;
+
+            text-decoration: none;
+
+            margin-top: 18px;
+
+            padding: 11px;
+
+            border-radius: 9px;
+
+            font-weight: bold;
+
+        }
+
+        /* Empty */
+
+        .empty-state {
+
+            text-align: center;
+
+            padding: 60px 20px;
+
+            background: rgba(255, 255, 255, 0.95);
+
+            border-radius: 18px;
+
+        }
+
+        .empty-state h2 {
+
+            margin-bottom: 8px;
+
+        }
+
+        .empty-state p {
+
+            color: #777;
+
+        }
+
+        /* Responsive */
+
+        @media (max-width: 850px) {
+
+            .search-form {
+
+                grid-template-columns: 1fr 1fr;
+
+            }
+
+        }
+
+        @media (max-width: 550px) {
+
+            .page-wrapper {
+
+                padding: 25px 12px;
+
+            }
+
+            .search-form {
+
+                grid-template-columns: 1fr;
+
+            }
+
+            .page-header h1 {
+
+                font-size: 28px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="page-wrapper">
+
+    <div class="items-container">
+
+
+        <!-- Header -->
+
+        <div class="page-header">
+
+            <h1>
+                Browse Donation Items
+            </h1>
+
+            <p>
+                Find useful items available from ShareCycle donors.
+            </p>
+
+        </div>
+
+
+        <!-- Search -->
+
+        <div class="search-card">
+
+            <form
+                method="GET"
+                action="/items"
+                class="search-form">
+
+
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Search items..."
+                    value="{{ request.args.get('search', '') }}">
+
+
+                <select name="category">
+
+                    <option value="">
+                        All Categories
+                    </option>
+
+                    <option value="Books"
+                        {% if request.args.get('category') == 'Books' %}selected{% endif %}>
+                        Books
+                    </option>
+
+                    <option value="Clothes"
+                        {% if request.args.get('category') == 'Clothes' %}selected{% endif %}>
+                        Clothes
+                    </option>
+
+                    <option value="Electronics"
+                        {% if request.args.get('category') == 'Electronics' %}selected{% endif %}>
+                        Electronics
+                    </option>
+
+                    <option value="Furniture"
+                        {% if request.args.get('category') == 'Furniture' %}selected{% endif %}>
+                        Furniture
+                    </option>
+
+                    <option value="Study Materials"
+                        {% if request.args.get('category') == 'Study Materials' %}selected{% endif %}>
+                        Study Materials
+                    </option>
+
+                    <option value="Toys"
+                        {% if request.args.get('category') == 'Toys' %}selected{% endif %}>
+                        Toys
+                    </option>
+
+                    <option value="Household"
+                        {% if request.args.get('category') == 'Household' %}selected{% endif %}>
+                        Household
+                    </option>
+
+                    <option value="Other"
+                        {% if request.args.get('category') == 'Other' %}selected{% endif %}>
+                        Other
+                    </option>
+
+                </select>
+
+
+                <input
+                    type="text"
+                    name="location"
+                    placeholder="Location"
+                    value="{{ request.args.get('location', '') }}">
+
+
+                <select name="condition">
+
+                    <option value="">
+                        Any Condition
+                    </option>
+
+                    <option value="New"
+                        {% if request.args.get('condition') == 'New' %}selected{% endif %}>
+                        New
+                    </option>
+
+                    <option value="Like New"
+                        {% if request.args.get('condition') == 'Like New' %}selected{% endif %}>
+                        Like New
+                    </option>
+
+                    <option value="Good"
+                        {% if request.args.get('condition') == 'Good' %}selected{% endif %}>
+                        Good
+                    </option>
+
+                    <option value="Used"
+                        {% if request.args.get('condition') == 'Used' %}selected{% endif %}>
+                        Used
+                    </option>
+
+                </select>
+
+
+                <button
+                    type="submit"
+                    class="search-btn">
+
+                    Search
+
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- Items -->
+
+        {% if items %}
+
+        <div class="items-grid">
+
+            {% for item in items %}
+
+            <div class="item-card">
+
+
+                <!-- Image -->
+
+                {% if item["image"] %}
+
+                    <img
+                        src="{{ url_for('uploaded_file', filename=item['image']) }}"
+                        alt="{{ item['title'] }}"
+                        class="item-image">
+
+                {% else %}
+
+                    <div class="no-image">
+                        No Image Available
+                    </div>
+
+                {% endif %}
+
+
+                <!-- Content -->
+
+                <div class="item-content">
+
+                    <div class="item-title">
+                        {{ item["title"] }}
+                    </div>
+
+
+                    <div class="item-description">
+
+                        {% if item["description"] %}
+
+                            {{ item["description"] }}
+
+                        {% else %}
+
+                            No description provided.
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="item-info">
+
+                        <div>
+                            <strong>Category:</strong>
+                            {{ item["category"] }}
+                        </div>
+
+                        <div>
+                            <strong>Condition:</strong>
+                            {{ item["condition"] or "Not specified" }}
+                        </div>
+
+                        <div>
+                            <strong>Quantity:</strong>
+                            {{ item["quantity"] }}
+                        </div>
+
+                        <div>
+                            <strong>Location:</strong>
+                            {{ item["location"] or "Not specified" }}
+                        </div>
+
+                    </div>
+
+
+                    <a
+                        href="/item/{{ item['id'] }}"
+                        class="view-btn">
+
+                        View Item
+
+                    </a>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-state">
+
+            <h2>
+                No Items Found
+            </h2>
+
+            <p>
+                Try changing your search or category filters.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
